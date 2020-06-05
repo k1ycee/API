@@ -1,0 +1,345 @@
+An example of this can be seen here:
+const http = require('http');
+function index(request, response) {
+    response.writeHead(200);
+    response.end('Hello, World!');
+}
+http.createServer(function (request, response) {
+    if (request.url === '/') {
+        return index(request, response);
+    }
+    response.writeHead(404);
+    response.end(http.STATUS_CODES[404]);
+}).listen(1337);
+If you continue to define your "routes" like this, though, you'll end up with one massive callback function, and we
+don't want a giant mess like that, so let's see if we can clean this up.
+    First, let's store all of our routes in an object:
+var routes = {
+    '/': function index(request, response) {
+        response.writeHead(200);
+        response.end('Hello, World!');
+    },
+    '/foo': function foo(request, response) {
+        response.writeHead(200);
+        response.end('You are now viewing "foo"');
+    }
+}
+Now that we've stored 2 routes in an object, we can now check for them in our main callback:
+http.createServer(function (request, response) {
+    if (request.url in routes) {
+        return routes[request.url](request, response);
+    }
+    response.writeHead(404);
+    response.end(http.STATUS_CODES[404]);
+}).listen(1337);
+Now every time you try to navigate your website, it will check for the existence of that path in your routes, and it will
+call the respective function.If no route is found, the server will respond with a 404(Not Found).
+And there you have it--routing with the HTTP Server API is very simple.
+
+
+punycode',
+'querystring',
+'readline',
+'repl',
+'stream',
+'string_decoder',
+'timers',
+'tls_(ssl)',
+'tracing',
+'tty',
+'dgram',
+'url',
+'util',
+'v8',
+'vm',
+'zlib' ]
+This list was obtained from the Node documentation API https://nodejs.org/api/all.html (JSON file:
+https://nodejs.org/api/all.json).
+All core modules at-a-glance
+assert
+The assert module provides a simple set of assertion tests that can be used to test invariants.
+buffer
+Prior to the introduction of TypedArray in ECMAScript 2015 (ES6), the JavaScript language had no mechanism for
+reading or manipulating streams of binary data. The Buffer class was introduced as part of the Node.js API to make
+it possible to interact with octet streams in the context of things like TCP streams and file system operations.
+Now that TypedArray has been added in ES6, the Buffer class implements the
+Uin
+t8Array
+API in a manner that is more optimized and suitable for Node.js' use cases.
+c/c++_addons
+Node.js Addons are dynamically-linked shared objects, written in C or C++, that can be loaded into Node.js using
+the require() function , and used just as if they were an ordinary Node.js module. They are used primarily to
+provide an interface between JavaScript running in Node.js and C/C++ libraries.
+child_process
+The child_process module provides the ability to spawn child processes in a manner that is similar, but not
+identical, to popen(3).
+cluster
+A single instance of Node.js runs in a single thread. To take advantage of multi-core systems the user will
+sometimes want to launch a cluster of Node.js processes to handle the load. The cluster module allows you to
+easily create child processes that all share server ports.GoalKicker.com – Node.js Notes for Professionals 11
+console
+The console module provides a simple debugging console that is similar to the JavaScript console mechanism
+provided by web browsers.
+crypto
+The crypto module provides cryptographic functionality that includes a set of wrappers for OpenSSL's hash, HMAC,
+cipher, decipher, sign and verify functions.
+deprecated_apis
+Node.js may deprecate APIs when either: (a) use of the API is considered to be unsafe, (b) an improved alternative
+API has been made available, or (c) breaking changes to the API are expected in a future major release.
+dns
+The dns module contains functions belonging to two different categories:
+1. Functions that use the underlying operating system facilities to perform name resolution, and that do not
+necessarily perform any network communication. This category contains only one function: dns.lookup().
+2. Functions that connect to an actual DNS server to perform name resolution, and that always use the network
+to perform DNS queries. This category contains all functions in the dns module except dns.lookup().
+domain
+This module is pending deprecation. Once a replacement API has been finalized, this module will be fully
+deprecated. Most end users should not have cause to use this module. Users who absolutely must have the
+functionality that domains provide may rely on it for the time being but should expect to have to migrate to a
+different solution in the future.
+Events
+Much of the Node.js core API is built around an idiomatic asynchronous event-driven architecture in which certain
+kinds of objects (called "emitters") periodically emit named events that cause Function objects ("listeners") to be
+called.
+fs
+File I/O is provided by simple wrappers around standard POSIX functions. To use this module do require('fs'). All
+the methods have asynchronous and synchronous forms.
+http
+The HTTP interfaces in Node.js are designed to support many features of the protocol which have been traditionally
+difficult to use. In particular, large, possibly chunk-encoded, messages. The interface is careful to never buffer entire
+requests or responses--the user is able to stream data.
+httpsGoalKicker.com – Node.js Notes for Professionals 12
+HTTPS is the HTTP protocol over TLS/SSL. In Node.js this is implemented as a separate module.
+module
+Node.js has a simple module loading system. In Node.js, files and modules are in one-to-one correspondence (each
+file is treated as a separate module).
+net
+The net module provides you with an asynchronous network wrapper. It contains functions for creating both
+servers and clients (called streams). You can include this module with require('net');.
+os
+The os module provides a number of operating system-related utility methods.
+path
+The path module provides utilities for working with file and directory paths.
+punycode
+The version of the punycode module bundled in Node.js is being deprecated.
+querystring
+The querystring module provides utilities for parsing and formatting URL query strings.
+readline
+The readline module provides an interface for reading data from a Readable stream (such as process.stdin) one
+line at a time.
+repl
+The repl module provides a Read-Eval-Print-Loop (REPL) implementation that is available both as a standalone
+program or includible in other applications.
+stream
+A stream is an abstract interface for working with streaming data in Node.js. The stream module provides a base
+API that makes it easy to build objects that implement the stream interface.
+There are many stream objects provided by Node.js. For instance, a request to an HTTP server and process.stdout
+are both stream instances.
+string_decoder
+The string_decoder module provides an API for decoding Buffer objects into strings in a manner that preserves
+encoded multi-byte UTF-8 and UTF-16 characters.
+timersGoalKicker.com – Node.js Notes for Professionals 13
+The timer module exposes a global API for scheduling functions to be called at some future period of time. Because
+the timer functions are globals, there is no need to call require('timers') to use the API.
+The timer functions within Node.js implement a similar API as the timers API provided by Web Browsers but use a
+different internal implementation that is built around the Node.js Event Loop.
+tls_(ssl)
+The tls module provides an implementation of the Transport Layer Security (TLS) and Secure Socket Layer (SSL)
+protocols that is built on top of OpenSSL.
+tracing
+Trace Event provides a mechanism to centralize tracing information generated by V8, Node core, and userspace
+code.
+Tracing can be enabled by passing the --trace-events-enabled flag when starting a Node.js application.
+tty
+The tty module provides the tty.ReadStream and tty.WriteStream classes. In most cases, it will not be necessary
+or possible to use this module directly.
+dgram
+The dgram module provides an implementation of UDP Datagram sockets.
+url
+The url module provides utilities for URL resolution and parsing.
+util
+The util module is primarily designed to support the needs of Node.js' own internal APIs. However, many of the
+utilities are useful for application and module developers as well.
+v8
+The v8 module exposes APIs that are specific to the version of V8 built into the Node.js binary.
+Note: The APIs and implementation are subject to change at any time.
+vm
+The vm module provides APIs for compiling and running code within V8 Virtual Machine contexts. JavaScript code
+can be compiled and run immediately or compiled, saved, and run later.
+Note: The vm module is not a security mechanism. Do not use it to run untrusted code.
+zlib
+The zlib module provides compression functionality implemented using Gzip and Deflate/Inflate.GoalKicker.com – Node.js Notes for Professionals 14
+Section 1.10: TLS Socket: server and client
+The only major differences between this and a regular TCP connection are the private Key and the public certificate
+that you’ll have to set into an option object.
+How to Create a Key and Certificate
+The first step in this security process is the creation of a private Key. And what is this private key? Basically, it's a set
+of random noise that's used to encrypt information. In theory, you could create one key, and use it to encrypt
+whatever you want. But it is best practice to have different keys for specific things. Because if someone steals your
+private key, it's similar to having someone steal your house keys. Imagine if you used the same key to lock your car,
+garage, office, etc.
+openssl genrsa -out private-key.pem 1024
+Once we have our private key, we can create a CSR (certificate signing request), which is our request to have the
+private key signed by a fancy authority. That is why you have to input information related to your company. This
+information will be seen by the signing authority, and used to verify you. In our case, it doesn’t matter what you
+type, since in the next step we're going to sign our certificate ourselves.
+openssl req -new -key private-key.pem -out csr.pem
+Now that we have our paper work filled out, it's time to pretend that we're a cool signing authority.
+openssl x509 -req -in csr.pem -signkey private-key.pem -out public-cert.pem
+Now that you have the private key and the public cert, you can establish a secure connection between two NodeJS
+apps. And, as you can see in the example code, it is a very simple process.
+Important!
+Since we created the public cert ourselves, in all honesty, our certificate is worthless, because we are nobodies. The
+NodeJS server won't trust such a certificate by default, and that is why we need to tell it to actually trust our cert
+with the following option rejectUnauthorized: false. Very important: never set this variable to true in a production
+environment.
+TLS Socket Server
+'use strict';
+var tls = require('tls');
+var fs = require('fs');
+const PORT = 1337;
+const HOST = '127.0.0.1'
+var options = {
+key: fs.readFileSync('private-key.pem'),
+cert: fs.readFileSync('public-cert.pem')
+};
+var server = tls.createServer(options, function(socket) {
+// Send a friendly message
+socket.write("I am the server sending you a message.");
+// Print the data that we received
+socket.on('data', function(data) {GoalKicker.com – Node.js Notes for Professionals 15
+console.log('Received: %s [it is %d bytes long]',
+data.toString().replace(/(\n)/gm,""),
+data.length);
+});
+// Let us know when the transmission is over
+socket.on('end', function() {
+console.log('EOT (End Of Transmission)');
+});
+});
+// Start listening on a specific port and address
+server.listen(PORT, HOST, function() {
+console.log("I'm listening at %s, on port %s", HOST, PORT);
+});
+// When an error occurs, show it.
+server.on('error', function(error) {
+console.error(error);
+// Close the connection after the error occurred.
+server.destroy();
+});
+TLS Socket Client
+'use strict';
+var tls = require('tls');
+var fs = require('fs');
+const PORT = 1337;
+const HOST = '127.0.0.1'
+// Pass the certs to the server and let it know to process even unauthorized certs.
+var options = {
+key: fs.readFileSync('private-key.pem'),
+cert: fs.readFileSync('public-cert.pem'),
+rejectUnauthorized: false
+};
+var client = tls.connect(PORT, HOST, options, function() {
+// Check if the authorization worked
+if (client.authorized) {
+console.log("Connection authorized by a Certificate Authority.");
+} else {
+console.log("Connection not authorized: " + client.authorizationError)
+}
+// Send a friendly message
+client.write("I am the client sending you a message.");
+});GoalKicker.com – Node.js Notes for Professionals 16
+client.on("data", function(data) {
+console.log('Received: %s [it is %d bytes long]',
+data.toString().replace(/(\n)/gm,""),
+data.length);
+// Close the connection after receiving the message
+client.end();
+});
+client.on('close', function() {
+console.log("Connection closed");
+});
+// When an error ocoures, show it.
+client.on('error', function(error) {
+console.error(error);
+// Close the connection after the error occurred.
+client.destroy();
+});
+Section 1.11: How to get a basic HTTPS web server up and
+running!
+Once you have node.js installed on your system, you can just follow the procedure below to get a basic web server
+running with support for both HTTP and HTTPS!
+Step 1 : Build a Certificate Authority
+1. create the folder where you want to store your key & certificate :
+mkdir conf
+2. go to that directory :
+cd conf
+3. grab this ca.cnf file to use as a configuration shortcut :
+wget https://raw.githubusercontent.com/anders94/https-authorized-clients/master/keys/ca.cnfGoalKicker.com – Node.js Notes for Professionals 17
+4. create a new certificate authority using this configuration :
+openssl req -new -x509 -days 9999 -config ca.cnf -keyout ca-key.pem -out ca-cert.pem
+5. now that we have our certificate authority in ca-key.pem and ca-cert.pem, let's generate a private key for
+the server :
+openssl genrsa -out key.pem 4096
+6. grab this server.cnf file to use as a configuration shortcut :
+wget https://raw.githubusercontent.com/anders94/https-authorized-clients/master/keys/server.cnf
+7. generate the certificate signing request using this configuration :
+openssl req -new -config server.cnf -key key.pem -out csr.pem
+8. sign the request :
+openssl x509 -req -extfile server.cnf -days 999 -passin "pass:password" -in csr.pem -CA cacert.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem
+Step 2 : Install your certificate as a root certificate
+1. copy your certificate to your root certificates' folder :
+sudo cp ca-crt.pem /usr/local/share/ca-certificates/ca-crt.pem
+2. update CA store :
+sudo update-ca-certificates
+Step 3 : Starting your node serverGoalKicker.com – Node.js Notes for Professionals 18
+First, you want to create a server.js file that contains your actual server code.
+The minimal setup for an HTTPS server in Node.js would be something like this :
+var https = require('https');
+var fs = require('fs');
+var httpsOptions = {
+key: fs.readFileSync('path/to/server-key.pem'),
+cert: fs.readFileSync('path/to/server-crt.pem')
+};
+var app = function (req, res) {
+res.writeHead(200);
+res.end("hello world\n");
+}
+https.createServer(httpsOptions, app).listen(4433);
+If you also want to support http requests, you need to make just this small modification :
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var httpsOptions = {
+key: fs.readFileSync('path/to/server-key.pem'),
+cert: fs.readFileSync('path/to/server-crt.pem')
+};
+var app = function (req, res) {
+res.writeHead(200);
+res.end("hello world\n");
+}
+http.createServer(app).listen(8888);
+https.createServer(httpsOptions, app).listen(4433);
+1. go to the directory where your server.js is located :
+cd /path/to
+2. run server.js :
+node server.jsGoalKicker.com – Node.js Notes for Professionals 19
+Chapter 2: npm
+Parameter Example
+access npm publish --access=public
+bin npm bin -g
+edit npm edit connect
+help npm help init
+init npm init
+install npm install
+link npm link
+prune npm prune
+publish npm publish ./
+restart npm restart
+start npm start
+stop npm start
+update npm update
+version npm version
+Node Package Manager (npm) provides following two main functionalities: Online repositories for node.js
+packages/modules which are searchable on search.nodejs.org. Command line utility to install Node.js packages, do
+version management and dependency management of Node.js packages.
